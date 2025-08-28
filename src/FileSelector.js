@@ -115,6 +115,7 @@ export default function FileSelector({ ctx }) {
     try {
       const params = new URLSearchParams();
       params.set('limit', '1000'); // Load up to 1000 PDFs
+      params.set('token', token); // Pass the HubSpot token from plugin config
       
       const url = `/api/hubspot-search?${params.toString()}`;
       console.log('Loading ALL PDFs from proxy:', url);

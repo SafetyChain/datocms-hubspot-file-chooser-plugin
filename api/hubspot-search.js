@@ -14,8 +14,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { q, limit = '500' } = req.query;
-    const apiKey = process.env.HUBSPOT_API_KEY;
+    const { q, limit = '500', token } = req.query;
+    const apiKey = token || process.env.HUBSPOT_API_KEY;
     
     if (!apiKey) {
       return res.status(500).json({ error: 'HubSpot API key not configured' });
