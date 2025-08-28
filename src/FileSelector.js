@@ -12,10 +12,12 @@ export default function FileSelector({ ctx }) {
   const [selectedFile, setSelectedFile] = React.useState(null); // Store selected file
   const [currentPage, setCurrentPage] = React.useState(1);
   const filesPerPage = 25;
+  const hasInitialized = React.useRef(false);
 
-  // Load PDFs on component mount (check cache first)
+  // Load PDFs on component mount (check cache first) - only run once
   React.useEffect(() => {
-    if (token && allFiles.length === 0) {
+    if (token && !hasInitialized.current) {
+      hasInitialized.current = true;
       loadPDFsWithCache();
     }
   }, [token]);
@@ -37,7 +39,7 @@ export default function FileSelector({ ctx }) {
           console.log('Loading PDFs from cache (age:', Math.round((now - timestamp) / (60 * 60 * 1000)), 'hours)');
           setAllFiles(data);
           setFilteredFiles(data);
-          ctx.notice(`Loaded ${data.length} PDFs from cache. Last updated ${new Date(timestamp).toLocaleTimeString()}`);
+          console.log(`Loaded ${data.length} PDFs from cache. Last updated ${new Date(timestamp).toLocaleTimeString()}`);
           return;
         } else {
           console.log('Cache expired, refreshing...');
@@ -153,7 +155,7 @@ export default function FileSelector({ ctx }) {
       };
       localStorage.setItem(cacheKey, JSON.stringify(cacheData));
       
-      ctx.notice(`Loaded ${fileResults.length} PDFs and cached for 24 hours.`);
+      console.log(`Loaded ${fileResults.length} PDFs and cached for 24 hours.`);
 
     } catch (err) {
       console.error('Load error:', err);
